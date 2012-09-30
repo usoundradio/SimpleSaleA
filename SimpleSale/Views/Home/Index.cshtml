@@ -1,0 +1,401 @@
+﻿@section Scripts {
+
+    <script type="text/javascript" src="//api.filepicker.io/v0/filepicker.js"></script>
+    <script src="~/Scripts/Custom/ajax-util.js"></script>
+    <script src="~/Scripts/Custom/MainViewModel.js"></script>
+    <script src="~/Scripts/Custom/Transactions.js"></script>
+    <script src="~/Scripts/Custom/Protected-Observable.js"></script>
+    <script src="~/Scripts/Custom/jquery.notifyBar.js"></script>
+    <script src="~/Scripts/Custom/FilePicker.js"></script>
+    <link rel="stylesheet" href="http://cdn.kendostatic.com/2012.2.710/styles/kendo.common.min.css">
+    <link rel="stylesheet" href="http://cdn.kendostatic.com/2012.2.710/styles/kendo.default.min.css">
+    <script src="http://cdn.kendostatic.com/2012.2.710/js/kendo.web.min.js"></script>
+    <script>
+       
+        $(document).ready(function () {
+            $('.hideshow').click(function () {
+                $('.current').removeClass('current');
+                $(this).addClass('current');
+
+
+            });
+            $("#checkoutwindow").kendoWindow({
+                actions: ["Custom", "Refresh", "Maximize", "Minimize", "Close"],
+                draggable: false,
+                modal: true,
+                resizable: false,
+                visible: false,
+                title: "Change Tax Rate",
+            });
+            $("#taxwindow").kendoWindow({
+                actions: ["Custom", "Refresh", "Maximize", "Minimize", "Close"],
+                draggable: false,
+                modal: true,
+                resizable: false,
+                visible: false,
+                title: "Change Tax Rate",
+            });
+            $("#createcategorywindow").kendoWindow({
+                actions: ["Custom", "Refresh", "Maximize", "Minimize", "Close"],
+                draggable: false,
+                modal: true,
+                resizable: false,
+                visible: false,
+                title: "Create Category",
+            });
+            $("#createitemwindow").kendoWindow({
+                actions: ["Custom", "Refresh", "Maximize", "Minimize", "Close"],
+                modal: true,
+                visible: false,
+                title: "Create Item",
+            });
+            $("#changetax").click(function () {
+                var win = $("#taxwindow").data("kendoWindow");
+                win.center();
+                win.open();
+            });
+            $("#createcategory").click(function () {
+                var win = $("#createcategorywindow").data("kendoWindow");
+                win.center();
+                win.open();
+            });
+            $("#createitem").click(function () {
+                var win = $("#createitemwindow").data("kendoWindow");
+                win.center();
+                win.open();
+            });
+
+ 
+            $("#checkout").hide();
+            $("#transactions").hide();
+            $("#store").hide();
+
+            $("#Checkoutbutton").click(function () {
+                $("#transactions").hide("slow");
+                $("#store").hide("slow");
+
+                $("#checkout").slideToggle("slow");
+
+            });
+            $("#Transactionsbutton").click(function () {
+                $("#checkout").hide("slow");
+                $("#store").hide("slow");
+
+                $("#transactions").slideToggle("slow");
+
+            });
+
+            $("#StoreButton").click(function () {
+                $("#checkout").hide("slow");
+                $("#transactions").hide("slow");
+
+                $("#store").slideToggle("slow");
+
+            });
+           
+       });
+        
+    </script>
+
+
+}
+
+            <div class="mainMenu"  align="center">
+                <span>
+                    <button id="Checkoutbutton" class="minimal-indent">New Sale</button></span>
+                <span>
+                        <button id="StoreButton" class="minimal-indent">Store</button></span>
+                <span>
+                            <button id="Transactionsbutton" class="minimal-indent">History</button></span>
+                <span>
+                    <button id="SettingsButton" class="minimal-indent">Inventory</button></span>
+            </div>
+   
+<section id="checkout">
+    
+      <div class="storebuttons">
+        <div id="createcategory">New Category</div>
+        <div id="createitem">New Item</div>
+    </div>
+ <div id="createcategorywindow"class="kendowin" >
+        <form id="addCategory" data-bind="submit: addCategory">
+            <fieldset>
+                <legend>Add New Category</legend>
+                <hr />
+                <ol>
+                    <li>
+                        <label for="Name">Name</label>
+                        <input id="Name" type="text" name="Name" />
+                    </li>
+
+                    <li>
+                        <label for="Description">Decription</label>
+                        <input type="text" name="Description" />
+                    </li>
+                    <li>
+                        <input style="display:none" type="text" name="UserId" value="@User.Identity.Name" />
+                    </li>
+                </ol>
+                <input type="submit" value="Add" />
+            </fieldset>
+        </form>
+    </div>
+  
+    <div class="content-wrapper">
+
+        <div id="v-nav" style="float:left">
+            <ul data-bind="foreach: categories">
+
+                 <li class="hideshow" data-bind="click: $root.selectedCategory">
+                    <span  data-bind="text: Name"></span>
+                         <img src="http://b.dryicons.com/images/icon_sets/coquette_part_2_icons_set/png/48x48/edit.png" style="width:22px; height:22px"  data-bind="click: $root.editCategory">
+                            <img src="http://wiki.domo.com/confluence/download/attachments/27689741/dash_remove_icon.png?version=1&modificationDate=1212695696000" style="width:15px; height:15px"  data-bind="click: $root.removeCategory">
+
+                </li>
+               
+
+            </ul>
+            </div>
+            <div  class="tab-content" data-bind="with: selectedCategory">
+
+                    <table data-bind="foreach: Items">
+                        <tbody style="float:left">
+                        <tr>
+                            <td><span style="text-align: center" data-bind="text: Name"></span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>
+                                    <img width="50" height="50"  class ="catalogimage" title="Add Item to Cart" data-bind='click: $root.addToCart, attr: { src: ItemUrl }'/></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span style="text-align: center" class="price" data-bind="text: '$' + Price"></span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button data-bind="click: $root.removeItem" title="Remove">Rem</button>
+                                <span>
+                                    <button data-bind="click: $root.editItem" title="Edit">Edit</button>
+                                </span></td>
+                        </tr>
+                            </tbody>
+                    </table>
+                </div>
+         <div style="float:left" data-bind="visible: subtotal()> 0" class="cart">
+            <div class="cartitemscontainer">
+                                                <span style="font-size: 22px"><strong>Total</strong>
+                                    <span id="total" data-bind="text:formatCurrency(cartstotal())"></span>
+                                                    <hr />
+                                </span>
+                <span>The checkout currently has <strong data-bind="text: cart().length"></strong> items.</span>
+                <table>
+                    <thead>
+                        <tr style="font-size: 12px">
+                            <th style="width: 50px">Qty.</th>
+                            <th style="width: 140px">Item</th>
+                            <th style="width: 50px">Price</th>
+                            <th style="width: 50px"></th>
+                        </tr>
+                    </thead>
+                    <!-- Iterate over view_mode.products (Observable Array) -->
+                    <tbody id="cartitems" data-bind="foreach:cart">
+                        <!-- This HTML within this <tbody></tbody> block will get rendered for each item in view_model.cart -->
+                        <tr>
+                            <td>
+
+                                <!-- [CartItem] $data.quantity (Observable) -->
+                                <input style="width: 28px" data-bind="value:$data.quantity" />
+                            </td>
+                            <td>
+
+                                <!-- [CartItem] $data.product().name (Observable) -->
+                                <span id="name" data-bind="text:$data.name"></span>
+                            </td>
+                            <td style="text-align: right">
+
+                                <!-- [CartItem] $data.cost (Computed Observable) -->
+                                <span data-bind="text:$data.cost"></span>
+                            </td>
+                            <td>
+                                <span data-bind="click:$parent.removeFromCart">
+                                    <button class="delete"></button>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <table>
+                    <tbody>
+
+                        <tr>
+                            <td><strong>Subtotal</strong> <span id="subtotal" data-bind="text:formatCurrency(subtotal())"></span>
+                                <span style="margin-left: 10px" data-bind="visible: tax()> 0"><span class="link" id="changetax">Tax</span>
+
+                                    <span>$</span><span id="tax" data-bind="text:taxtotals"></span></span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span><strong>Discount</strong>
+                                    <input id="discount" style="width: 50px" data-bind='value: discount, valueUpdate: "afterkeydown"' />
+                                </span>
+
+                            </td>
+                    </tbody>
+                </table>
+                <button style="width: 200px; height: 30px" data-bind="click: checkoutFromCart">Checkout</button>
+            </div>
+        </div>
+
+
+
+
+        </div>
+
+    
+       
+
+    <div id="checkoutwindow">
+        <h3>Are you sure you want to check out?</h3>
+        <div>Customer: <span></span>Customer Goes Here</div>
+        <br />
+        <div>
+            Subtotal: <span data-bind="text:formatCurrency(subtotal())"></span>
+            <br />
+        </div>
+        <div>
+            <span>Tax:</span> <span>$</span><span data-bind="text:taxtotals"></span>
+        </div>
+        <div>
+            Shipping :<input style="width: 25px" data-bind='value: shipping, valueUpdate: "afterkeydown"' />
+        </div>
+        <div id="totaltest">Total: <span data-bind="text:formatCurrency(cartstotal())"></span></div>
+        <h3>Select Payment Method</h3>
+
+        <div>
+            Cash<input type="radio" name="paymentmethod" value="Cash" />
+        </div>
+        <div>Credit Card<input type="radio" name="paymentmethod" value="Credit" checked="checked" /></div>
+        <div>Check<input type="radio" name="paymentmethod" value="Check" checked="checked" /></div>
+
+        <button data-bind="click: checkOutCustomer">Check Out Customer</button>
+        <button>Email Reciept</button>
+        <button>Print Reciept</button>
+    </div>
+    <div id="taxwindow">
+        <span>Current Tax is set to</span> <span data-bind="text:tax()"></span><span>%</span>
+        <br />
+        <input data-bind='value: tax, valueUpdate: "afterkeydown"' />
+    </div>
+
+   
+
+            @*    Edit Category & Item Dialogs*@
+    <div id="categoryDialog" data-bind="with: selectedCategory">
+    Category Name:
+    <input type="text" data-bind="value: Name" />
+</div>
+      <div id="itemDialog" data-bind="with: selectedItemId">
+    Item Name:
+    <input type="text" data-bind="value: Name" />
+</div>
+    <div id="createitemwindow" style="padding: 20px">
+
+        <form id="addItem" data-bind="submit: addItem">
+
+            <fieldset>
+                <legend>Add New Item</legend>
+                <hr />
+                <ol style="float: left">
+
+                    <li>
+                        <label for="Name">Select Category</label>
+                        <select name="CategoryId" id="selectedCategoryvalue" data-bind="click: testclick, options: categories, optionsText: 'Name', optionsValue: 'Id', value: selectedItemId"></select>
+                    </li>
+                    <li>
+                        <label for="Name">Name</label>
+                        <input type="text" name="Name" />
+                    </li>
+                    <li>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="Picture">Picture Url</label>
+                                        <a id="filepicker">File</a>
+                                        <input style="display: none" name="ItemUrl" id="thispicurl" />
+                                    </td>
+                                    <td>
+                                        <div id="imgresult"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ol>
+                <ol style="float: left; margin-left: 15px">
+                    <li>
+                        <label for="Description">Decription</label>
+                        <input type="text" name="Description" />
+                    </li>
+
+                    <li>
+                        <label for="Quantity">Quantity</label>
+                        <input type="text" name="Quantity" />
+                    </li>
+                    <li>
+                        <label for="Price">Price</label>
+                        <input type="text" name="Price" />
+                    </li>
+                    <li>
+                        <input  style="display:none" type="text" name="UserId" value="@User.Identity.Name" />
+                    </li>
+                </ol>
+                <input type="submit" value="Add" />
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="savedbox" id="removedStatus">Removed Successfully</div>
+    <div class="savedbox" id="savedStatus">Saved Successfully</div>
+
+</section>
+
+@*Transactions View*@
+
+<section id="transactions">
+    <hr />
+
+    <div data-bind="foreach: $root.transactions">
+        <div class="product-view">
+            <dl>
+                <dt>Id</dt>
+                <dd data-bind="text: Id"></dd>
+                <dt>Name</dt>
+                <dd data-bind="text: Name"></dd>
+                <dt>Subtotal</dt>
+                <dd data-bind="text: Sum"></dd>
+                <dt>Tax</dt>
+                <dd data-bind="text: Tax"></dd>
+                <dt>Total</dt>
+                <dd data-bind="text: Total"></dd>
+            </dl>
+            <div class="edit-buttons">
+                <button data-bind="click: $root.openeditwindow"><span class="k-icon k-edit"></span>Edit</button>
+                <button data-bind="click: $root.removeTransaction"><span class="k-icon k-delete"></span>Delete</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+@*Store Management Page*@
+<section id="store">
+  
+</section>
+
+

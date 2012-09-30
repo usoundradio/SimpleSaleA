@@ -1,0 +1,43 @@
+﻿@model SimpleSale.Models.Reciept
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Reciept</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.quantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.quantity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.cost)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.cost)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.costcomp)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.costcomp)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

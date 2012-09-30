@@ -1,0 +1,61 @@
+﻿@model SimpleSale.Models.Reciept
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Reciept</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.quantity)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.quantity)
+            @Html.ValidationMessageFor(model => model.quantity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.cost)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.cost)
+            @Html.ValidationMessageFor(model => model.cost)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.costcomp)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.costcomp)
+            @Html.ValidationMessageFor(model => model.costcomp)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
